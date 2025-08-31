@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # JP-GEO Sistema de Gestão Rural
 
 Este projeto é um sistema web simples para gestão rural com cadastro de usuários, controle de marcos geográficos e registro de serviços realizados.
@@ -74,3 +75,7 @@ Sistema-JP/
 ## Licença
 
 MIT
+=======
+# Sistema-JP
+Sistema de Gestão Rural JP-GEO
+>>>>>>> 30f5c1c6a69bc5a780b8441feb0250566a3a89a1
