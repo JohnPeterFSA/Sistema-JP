@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JP-GEO | Serviços</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <header class="bg-green-600 text-white p-4 flex justify-between items-center shadow-md">
+    <h1 class="text-xl font-bold">Gerenciamento de Serviços</h1>
+    <button onclick="voltar()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm">
+      Voltar
+    </button>
+  </header>
+
+  <main class="flex-1 flex flex-col items-center p-6">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Registrar Novo Serviço</h2>
+      <form id="formServicos" class="space-y-4">
+        <div>
+          <label for="fazenda" class="block text-left text-sm font-medium text-gray-700">Fazenda:</label>
+          <input type="text" id="fazenda" name="fazenda" required class="mt-1 block w-full px-3 py-2 border rounded-md">
+        </div>
+        <div>
+          <label for="cliente" class="block text-left text-sm font-medium text-gray-700">Cliente:</label>
+          <input type="text" id="cliente" name="cliente" required class="mt-1 block w-full px-3 py-2 border rounded-md">
+        </div>
+        <div>
+          <label for="servico" class="block text-left text-sm font-medium text-gray-700">Tipo de Serviço:</label>
+          <input type="text" id="servico" name="servico" required class="mt-1 block w-full px-3 py-2 border rounded-md">
+        </div>
+        <div>
+          <label for="valor" class="block text-left text-sm font-medium text-gray-700">Valor:</label>
+          <input type="text" id="valor" name="valor" required class="mt-1 block w-full px-3 py-2 border rounded-md">
+        </div>
+        <div>
+          <label for="pagamento" class="block text-left text-sm font-medium text-gray-700">Status do Pagamento:</label>
+          <input type="text" id="pagamento" name="pagamento" required class="mt-1 block w-full px-3 py-2 border rounded-md">
+        </div>
+        <div>
+          <label for="data" class="block text-left text-sm font-medium text-gray-700">Data:</label>
+          <input type="date" id="data" name="data" required class="mt-1 block w-full px-3 py-2 border rounded-md">
+        </div>
+        <button type="submit" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+          Registrar Serviço
+        </button>
+      </form>
+    </div>
+
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Serviços Registrados</h2>
+      <ul id="listaServicos" class="space-y-4">
+        </ul>
+    </div>
+  </main>
+
+  <script>
+    function voltar() { window.location.href = "dashboard.html"; }
+
+    const form = document.getElementById("formServicos");
+    const lista = document.getElementById("listaServicos");
+
+    // Listar serviços
+    async function carregarServicos() {
+      const response = await fetch('/api/servicos');
+      const servicos = await response.json();
+      lista.innerHTML = '';
+      servicos.forEach(s => {
+        lista.innerHTML += `
+          <li class="p-2 border rounded-md">
+            <strong>${s.servico}</strong> - Fazenda: ${s.fazenda}<br>
+            Cliente: ${s.cliente} | Valor: ${s.valor} | Pagamento: ${s.pagamento} | Data: ${s.data}
+          </li>`;
+      });
+    }
+
+    // Cadastrar serviço
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const dados = {
+        fazenda: document.getElementById("fazenda").value,
+        cliente: document.getElementById("cliente").value,
+        servico: document.getElementById("servico").value,
+        valor: document.getElementById("valor").value,
+        pagamento: document.getElementById("pagamento").value,
+        data: document.getElementById("data").value,
+      };
+
+      const response = await fetch('/api/servicos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+
+      const result = await response.json();
+      alert(result.message);
+      form.reset();
+      carregarServicos();
+    });
+
+    carregarServicos();
+  </script>
+
+</body>
+</html>

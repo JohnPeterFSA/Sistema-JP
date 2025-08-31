@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Banco de dados gerado localmente
+jpgeo.db
+
+# Ambiente virtual
+venv/
+.env
+
+# VSCode
+.vscode/
+
+# Mac OS
+.DS_Store

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JP-GEO | Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #10b981, #059669);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+    }
+    
+    .nav-card {
+      transition: all 0.3s ease;
+    }
+    
+    .nav-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <img src="https://placehold.co/40x40/10b981/ffffff?text=JP" alt="Logo" class="w-10 h-10 rounded-lg">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">JP-GEO</h1>
+            <p class="text-sm text-gray-500">Sistema de Gestão Rural</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span class="text-sm text-gray-600">Olá, <span id="userName" class="font-medium">Usuário</span>!</span>
+          <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+            Sair
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="stat-card text-white p-6 rounded-xl">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm font-medium">Total Usuários</p>
+            <p class="text-3xl font-bold" id="totalUsuarios">-</p>
+          </div>
+          <div class="text-4xl opacity-80">👥</div>
+        </div>
+      </div>
+      
+      <div class="stat-card text-white p-6 rounded-xl">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm font-medium">Marcos Cadastrados</p>
+            <p class="text-3xl font-bold" id="totalMarcos">-</p>
+          </div>
+          <div class="text-4xl opacity-80">📍</div>
+        </div>
+      </div>
+      
+      <div class="stat-card text-white p-6 rounded-xl">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm font-medium">Serviços Realizados</p>
+            <p class="text-3xl font-bold" id="totalServicos">-</p>
+          </div>
+          <div class="text-4xl opacity-80">🛠️</div>
+        </div>
+      </div>
+      
+      <div class="stat-card text-white p-6 rounded-xl">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm font-medium">Receita Total</p>
+            <p class="text-2xl font-bold" id="receitaTotal">-</p>
+          </div>
+          <div class="text-4xl opacity-80">💰</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Card Usuários -->
+      <div class="nav-card bg-white p-8 rounded-2xl shadow-lg cursor-pointer"
+           onclick="window.location.href='usuarios.html'">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">👤</span>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-3">Usuários</h2>
+          <p class="text-gray-600 mb-6">Gerenciar cadastros de clientes e controlar acessos ao sistema</p>
+          <div class="flex items-center justify-center text-blue-600 font-medium">
+            <span>Acessar módulo</span>
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Marcos -->
+      <div class="nav-card bg-white p-8 rounded-2xl shadow-lg cursor-pointer"
+           onclick="window.location.href='marcos.html'">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">📍</span>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-3">Marcos</h2>
+          <p class="text-gray-600 mb-6">Controle completo de marcos geográficos e áreas de fazendas</p>
+          <div class="flex items-center justify-center text-green-600 font-medium">
+            <span>Acessar módulo</span>
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Serviços -->
+      <div class="nav-card bg-white p-8 rounded-2xl shadow-lg cursor-pointer"
+           onclick="window.location.href='servicos.html'">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">🛠️</span>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-3">Serviços</h2>
+          <p class="text-gray-600 mb-6">Registrar e acompanhar todos os serviços realizados</p>
+          <div class="flex items-center justify-center text-purple-600 font-medium">
+            <span>Acessar módulo</span>
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-white p-6 rounded-xl shadow-lg">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Ações Rápidas</h3>
+      <div class="flex flex-wrap gap-3">
+        <button onclick="window.location.href='cadastro.html'" 
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+          + Novo Usuário
+        </button>
+        <button onclick="window.location.href='marcos.html'" 
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+          + Novo Marco
+        </button>
+        <button onclick="window.location.href='servicos.html'" 
+                class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+          + Novo Serviço
+        </button>
+        <button onclick="gerarRelatorio()" 
+                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+          📊 Relatório Geral
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <p class="text-center text-gray-500 text-sm">
+        © 2025 JP-GEO Fazendas – Sistema de Gestão Rural
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Verifica se usuário está logado
+    const userLogin = sessionStorage.getItem('userLogin');
+    if (!userLogin) {
+      window.location.href = '/';
+    } else {
+      document.getElementById('userName').textContent = userLogin;
+    }
+
+    // Função de logout
+    function logout() {
+      sessionStorage.removeItem('userLogin');
+      window.location.href = '/';
+    }
+
+    // Carregar estatísticas
+    async function carregarEstatisticas() {
+      try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+        
+        document.getElementById('totalUsuarios').textContent = stats.total_usuarios || 0;
+        document.getElementById('totalMarcos').textContent = stats.total_marcos || 0;
+        document.getElementById('totalServicos').textContent = stats.total_servicos || 0;
+        document.getElementById('receitaTotal').textContent = stats.receita_total || 'R$ 0,00';
+        
+      } catch (error) {
+        console.error('Erro ao carregar estatísticas:', error);
+      }
+    }
+
+    // Função para gerar relatório
+    function gerarRelatorio() {
+      const stats = {
+        usuarios: document.getElementById('totalUsuarios').textContent,
+        marcos: document.getElementById('totalMarcos').textContent,
+        servicos: document.getElementById('totalServicos').textContent,
+        receita: document.getElementById('receitaTotal').textContent
+      };
+      
+      const relatorio = `
+RELATÓRIO JP-GEO - ${new Date().toLocaleDateString('pt-BR')}
+========================================
+
+📊 ESTATÍSTICAS GERAIS:
+• Total de Usuários: ${stats.usuarios}
+• Marcos Cadastrados: ${stats.marcos}  
+• Serviços Realizados: ${stats.servicos}
+• Receita Total: ${stats.receita}
+
+========================================
+Relatório gerado automaticamente pelo sistema JP-GEO
+      `;
+      
+      // Cria e baixa arquivo
+      const blob = new Blob([relatorio], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `relatorio-jpgeo-${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      alert('Relatório gerado e baixado com sucesso!');
+    }
+
+    // Atualizar estatísticas a cada 30 segundos
+    carregarEstatisticas();
+    setInterval(carregarEstatisticas, 30000);
+
+    // Animação de entrada dos cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.nav-card, .stat-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    });
+  </script>
+
+</body>
+</html>

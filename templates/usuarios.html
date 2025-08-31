@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JP-GEO | Usuários</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <button onclick="voltar()" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Gerenciamento de Usuários</h1>
+            <p class="text-sm text-gray-500">Controle total dos usuários do sistema</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="window.location.href='cadastro.html'" 
+                  class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+            + Novo Usuário
+          </button>
+          <button onclick="exportarUsuarios()" 
+                  class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+            📊 Exportar
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Search and Filter -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex-1">
+          <label for="searchInput" class="sr-only">Pesquisar usuários</label>
+          <div class="relative">
+            <input type="text" id="searchInput" placeholder="Pesquisar por nome, login ou email..." 
+                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+            <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <select id="filterProfissao" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+            <option value="">Todas as profissões</option>
+          </select>
+          <button onclick="limparFiltros()" class="text-gray-500 hover:text-gray-700 text-sm">
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-800">Lista de Usuários</h2>
+        <p class="text-sm text-gray-500 mt-1">Total: <span id="totalCount">0</span> usuários</p>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Usuário
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Profissão
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody id="usuariosTable" class="bg-white divide-y divide-gray-200">
+            <!-- Carregamento -->
+            <tr id="loadingRow">
+              <td colspan="5" class="px-6 py-12 text-center">
+                <div class="flex items-center justify-center">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span class="text-gray-500">Carregando usuários...</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-12">
+      <div class="text-gray-400 text-6xl mb-4">👤</div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum usuário encontrado</h3>
+      <p class="text-gray-500 mb-6">Comece adicionando o primeiro usuário ao sistema</p>
+      <button onclick="window.location.href='cadastro.html'" 
+              class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg">
+        Cadastrar Primeiro Usuário
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Modal de Confirmação -->
+  <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+      <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-center text-gray-900 mb-2">Confirmar Exclusão</h3>
+      <p class="text-sm text-gray-500 text-center mb-6">Esta ação não pode ser desfeita. O usuário será permanentemente removido.</p>
+      <div class="flex space-x-3">
+        <button onclick="fecharModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition-colors">
+          Cancelar
+        </button>
+        <button onclick="confirmarExclusao()" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
+          Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarios = [];
+    let usuarioParaExcluir = null;
+
+    function voltar() { 
+      window.location.href = "dashboard.html"; 
+    }
+
+    // Carregar usuários
+    async function carregarUsuarios() {
+      try {
+        const response = await fetch('/api/usuarios');
+        usuarios = await response.json();
+        
+        document.getElementById('loadingRow').style.display = 'none';
+        
+        if (usuarios.length === 0) {
+          document.getElementById('emptyState').classList.remove('hidden');
+          return;
+        }
+        
+        renderizarUsuarios(usuarios);
+        preencherFiltros();
+        
+      } catch (error) {
+        console.error('Erro ao carregar usuários:', error);
+        document.getElementById('loadingRow').innerHTML = `
+          <td colspan="5" class="px-6 py-12 text-center text-red-500">
+            Erro ao carregar usuários. Verifique se o servidor está rodando.
+          </td>
+        `;
+      }
+    }
+
+    function renderizarUsuarios(lista) {
+      const tabela = document.getElementById('usuariosTable');
+      const loadingRow = document.getElementById('loadingRow');
+      
+      // Remove loading se existir
+      if (loadingRow) loadingRow.remove();
+      
+      tabela.innerHTML = '';
+      
+      if (lista.length === 0) {
+        tabela.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+              Nenhum usuário encontrado com os filtros aplicados
+            </td>
+          </tr>
+        `;
+        document.getElementById('totalCount').textContent = '0';
+        return;
+      }
+
+      lista.forEach(u => {
+        const isAdmin = u.login === 'admin';
+        tabela.innerHTML += `
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                  <span class="text-green-600 font-medium text-sm">${u.nome ? u.nome.charAt(0).toUpperCase() : u.login.charAt(0).toUpperCase()}</span>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900">${u.nome || 'Sem nome'}</div>
+                  <div class="text-sm text-gray-500">@${u.login}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">${u.email || 'Não informado'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getProfissaoColor(u.profissao)}">
+                ${u.profissao || 'Não informado'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isAdmin ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">
+                ${isAdmin ? 'Administrador' : 'Usuário'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button onclick="verDetalhes(${u.id})" class="text-blue-600 hover:text-blue-900 mr-3 transition-colors">
+                Ver
+              </button>
+              ${!isAdmin ? `<button onclick="excluirUsuario(${u.id}, '${u.nome || u.login}')" class="text-red-600 hover:text-red-900 transition-colors">Excluir</button>` : ''}
+            </td>
+          </tr>
+        `;
+      });
+      
+      document.getElementById('totalCount').textContent = lista.length;
+    }
+
+    function getProfissaoColor(profissao) {
+      if (!profissao || profissao === 'Não informado') return 'bg-gray-100 text-gray-800';
+      
+      const colors = {
+        'Administrador': 'bg-purple-100 text-purple-800',
+        'Fazendeiro': 'bg-green-100 text-green-800',
+        'Engenheiro': 'bg-blue-100 text-blue-800',
+        'Técnico': 'bg-yellow-100 text-yellow-800'
+      };
+      
+      return colors[profissao] || 'bg-indigo-100 text-indigo-800';
+    }
+
+    function preencherFiltros() {
+      const profissoes = [...new Set(usuarios.map(u => u.profissao).filter(p => p))];
+      const select = document.getElementById('filterProfissao');
+      
+      select.innerHTML = '<option value="">Todas as profissões</option>';
+      profissoes.forEach(prof => {
+        select.innerHTML += `<option value="${prof}">${prof}</option>`;
+      });
+    }
+
+    // Filtros e busca
+    function aplicarFiltros() {
+      const busca = document.getElementById('searchInput').value.toLowerCase();
+      const profissao = document.getElementById('filterProfissao').value;
+      
+      let filtrados = usuarios.filter(u => {
+        const matchBusca = !busca || 
+          (u.nome && u.nome.toLowerCase().includes(busca)) ||
+          u.login.toLowerCase().includes(busca) ||
+          (u.email && u.email.toLowerCase().includes(busca));
+          
+        const matchProfissao = !profissao || u.profissao === profissao;
+        
+        return matchBusca && matchProfissao;
+      });
+      
+      renderizarUsuarios(filtrados);
+    }
+
+    function limparFiltros() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterProfissao').value = '';
+      renderizarUsuarios(usuarios);
+    }
+
+    // Event listeners para filtros
+    document.getElementById('searchInput').addEventListener('input', aplicarFiltros);
+    document.getElementById('filterProfissao').addEventListener('change', aplicarFiltros);
+
+    // Exclusão de usuários
+    function excluirUsuario(id, nome) {
+      usuarioParaExcluir = { id, nome };
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      usuarioParaExcluir = null;
+    }
+
+    async function confirmarExclusao() {
+      if (!usuarioParaExcluir) return;
+      
+      try {
+        const response = await fetch(`/api/usuarios/${usuarioParaExcluir.id}`, {
+          method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Usuário excluído com sucesso!');
+          carregarUsuarios();
+        } else {
+          alert('Erro ao excluir usuário: ' + result.message);
+        }
+      } catch (error) {
+        alert('Erro ao conectar com o servidor.');
+      }
+      
+      fecharModal();
+    }
+
+    // Ver detalhes (implementação futura)
+    function verDetalhes(id) {
+      const usuario = usuarios.find(u => u.id === id);
+      if (usuario) {
+        alert(`Detalhes de ${usuario.nome || usuario.login}:\n\nLogin: ${usuario.login}\nEmail: ${usuario.email || 'Não informado'}\nProfissão: ${usuario.profissao || 'Não informado'}`);
+      }
+    }
+
+    // Exportar usuários
+    function exportarUsuarios() {
+      if (usuarios.length === 0) {
+        alert('Não há usuários para exportar.');
+        return;
+      }
+      
+      let csv = 'Login,Nome,Email,Profissão\n';
+      usuarios.forEach(u => {
+        csv += `"${u.login}","${u.nome || ''}","${u.email || ''}","${u.profissao || ''}"\n`;
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `usuarios-jpgeo-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+    // Inicializar
+    carregarUsuarios();
+
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        fecharModal();
+      }
+    });
+  </script>
+
+</body>
+</html>

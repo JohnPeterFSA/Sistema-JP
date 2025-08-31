@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JP-GEO | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+        
+        <!-- Logo e Título -->
+        <div class="mb-6">
+            <img src="https://placehold.co/150x50/28a745/ffffff?text=JP-GEO" alt="Logotipo JP-GEO" class="mx-auto h-12 mb-4">
+            <h1 class="text-3xl font-bold text-gray-800">JP-GEO Fazendas</h1>
+            <p class="text-gray-600 mt-2">Sistema de Gestão Rural</p>
+        </div>
+
+        <!-- Formulário de Login -->
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label for="login" class="block text-left text-sm font-medium text-gray-700">Login:</label>
+                <input type="text" id="login" name="login" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+                <label for="senha" class="block text-left text-sm font-medium text-gray-700">Senha:</label>
+                <input type="password" id="senha" name="senha" required 
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <button type="submit" class="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                Entrar
+            </button>
+        </form>
+
+        <!-- Mensagens -->
+        <div id="messageBox" class="mt-4 p-3 rounded-md hidden"></div>
+
+        <!-- Links -->
+        <div class="mt-6 space-y-2">
+            <a href="cadastro.html" class="block text-green-600 hover:text-green-500">
+                Não tem conta? Cadastre-se
+            </a>
+            <a href="#" class="block text-gray-500 hover:text-gray-400 text-sm">
+                Esqueceu a senha?
+            </a>
+        </div>
+
+        <!-- Usuário de teste -->
+        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p class="text-sm text-yellow-800 font-medium">Teste o sistema:</p>
+            <p class="text-sm text-yellow-700">Login: <strong>admin</strong></p>
+            <p class="text-sm text-yellow-700">Senha: <strong>123456</strong></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const messageBox = document.getElementById('messageBox');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                login: document.getElementById('login').value,
+                senha: document.getElementById('senha').value,
+            };
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    // Armazenar login no sessionStorage para controle básico de sessão
+                    sessionStorage.setItem('userLogin', dados.login);
+                    // Redirecionar para dashboard
+                    setTimeout(() => { 
+                        window.location.href = 'dashboard.html'; 
+                    }, 1000);
+                } else {
+                    showMessage(result.message, 'error');
+                }
+
+            } catch (error) {
+                showMessage('Erro ao conectar ao servidor. Verifique se o Flask está rodando.', 'error');
+                console.error('Erro:', error);
+            }
+        });
+
+        function showMessage(message, type) {
+            messageBox.classList.remove('hidden');
+            messageBox.textContent = message;
+            if (type === 'success') {
+                messageBox.className = 'mt-4 p-3 rounded-md bg-green-100 text-green-700';
+            } else {
+                messageBox.className = 'mt-4 p-3 rounded-md bg-red-100 text-red-700';
+            }
+        }
+
+        // Limpar mensagem ao digitar
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                messageBox.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
